@@ -13,7 +13,7 @@ const movie = {
 };
 
 // 1. Destructure title, year, and rating in one line.
-const { title: movieTitle1, year: movieYear, rating: movieRating } = movie;
+const { title, year, rating } = movie;
 
 // 2. Destructure director.name using nested destructuring.
 const { director: { name } } = movie;

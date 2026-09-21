@@ -27,5 +27,7 @@ const logMovies = (...movies) => {
   movies.forEach(movie => console.log(movie));
 };
 
-console.log(watchlist);  // ["Inception", "Interstellar"] — should be unchanged
-console.log(newMovies);  // ["Tenet", "Oppenheimer"] — should be unchanged
+// ["Inception", "Interstellar"] — should be unchanged
+console.log(watchlist);
+// ["Tenet", "Oppenheimer"] — should be unchanged
+console.log(newMovies);

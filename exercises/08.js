@@ -40,10 +40,10 @@ async function getPostById(id) {
 // Call getPostById(99999) — what happens? Handle it.
 getPostById(1)
   .then(post => console.log(post))
-  .catch(error => console.error(error));
+  .catch(error => console.log(error));
 
 getPostById(99999)
   .then(post => console.log(post))
-  .catch(error => console.error("Error:", error.message));
+  .catch(error => console.log("Error:", error.message));
 
 fetchPosts();

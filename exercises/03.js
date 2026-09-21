@@ -17,8 +17,9 @@ Rating: ${rating}/10`;
 // 3. Expression inside the string:
 const summary = `Rating is ${rating >= 8.5 ? "excellent" : "good"}`;
 
-console.log(label);       // "Movie: Inception (2010)"
-console.log(description); // Title: Inception
-// Year: 2010
-// Rating: 8.8/10
-console.log(summary);     // "Rating is excellent"
+// "Movie: Inception (2010)"
+console.log(label);
+// Title: Inception \n Year: 2010 \n Rating: 8.8/10
+console.log(description);
+// "Rating is excellent"
+console.log(summary);

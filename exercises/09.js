@@ -19,7 +19,7 @@ const directorName = movie2.director?.name;
 
 // 2. Display the tagline of movie2, or "No tagline" if it is empty or missing.
 //    Use ||, not ??. The difference: ?? only falls back on null/undefined,
-//    so movie2.tagline ?? "No tagline" would return "" (empty string) instead of "No tagline".
+//    so using ?? here would return "" (empty string) instead of "No tagline".
 //    || falls back on any falsy value (null, undefined, "", 0, false), which is what you want here.
 const tagline = movie2.tagline || "No tagline";
 
@@ -46,5 +46,7 @@ function formatPosterUrl(movie) {
 const tmdbMovie        = { title: "Inception", poster_path: "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg" };
 const tmdbMovieNoPoster = { title: "Obscure Film", poster_path: null };
 
-console.log(formatPosterUrl(tmdbMovie));         // https://image.tmdb.org/t/p/w500/oYuLEt3...
-console.log(formatPosterUrl(tmdbMovieNoPoster)); // https://placehold.co/500x750?text=No+Image
+// https://image.tmdb.org/t/p/w500/oYuLEt3...
+console.log(formatPosterUrl(tmdbMovie));
+// https://placehold.co/500x750?text=No+Image
+console.log(formatPosterUrl(tmdbMovieNoPoster));
