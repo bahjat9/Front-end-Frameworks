@@ -9,8 +9,8 @@ interface MovieListProps {
 
 export default function MovieList({ movies, genres = [], onMovieClick }: MovieListProps) {
   if (movies.length === 0) {
-    return <p>No movies match your search.</p>;
-  }
+  return <p>No movies match your search.</p>;
+}
 
   return (
     <div className="movies-grid">
