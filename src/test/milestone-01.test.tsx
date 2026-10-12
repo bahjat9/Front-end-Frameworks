@@ -19,11 +19,12 @@
  * Use `npm run test:m1` to run this file in isolation.
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 
 // These imports will produce clear errors if the files are missing —
 // that error message tells you exactly which component to create next.
+import { SAMPLE_MOVIES } from "../data/sampleMovies";
 import MovieCard from "../components/MovieCard";
 import MovieList from "../components/MovieList";
 import SearchBar from "../components/SearchBar";
@@ -52,6 +53,41 @@ const MOCK_MOVIES: Movie[] = [
   { ...MOCK_MOVIE, id: 2, title: "Interstellar" },
   { ...MOCK_MOVIE, id: 3, title: "The Dark Knight" },
 ];
+
+beforeEach(() => {
+  localStorage.clear();
+  document.documentElement.removeAttribute("data-theme");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((input: string) =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve(
+            input.includes("/genre/movie/list")
+              ? { genres: [] }
+              : {
+                  results: SAMPLE_MOVIES,
+                  page: 1,
+                  total_pages: 1,
+                  total_results: SAMPLE_MOVIES.length,
+                },
+          ),
+      }),
+    ),
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+async function renderAppWithMovies() {
+  render(<App />);
+  await waitFor(() => {
+    expect(screen.getAllByRole("heading", { level: 2 }).length).toBeGreaterThan(0);
+  });
+}
 
 // ── MovieCard — props and rendering ──────────────────────────────────────────
 
@@ -235,24 +271,24 @@ describe("App — integration (search and filter)", () => {
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
-  it("renders at least one movie card on initial load", () => {
-    render(<App />);
+  it("renders at least one movie card on initial load", async () => {
+    await renderAppWithMovies();
     const movieTitles = screen.getAllByRole("heading", { level: 2 });
     expect(movieTitles.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('shows "Avatar: The Way of Water" from the sample data', () => {
-    render(<App />);
+  it('shows "Avatar: The Way of Water" from the sample data', async () => {
+    await renderAppWithMovies();
     expect(screen.getByText(/Avatar: The Way of Water/i)).toBeInTheDocument();
   });
 
-  it('shows "John Wick: Chapter 4" from the sample data', () => {
-    render(<App />);
+  it('shows "John Wick: Chapter 4" from the sample data', async () => {
+    await renderAppWithMovies();
     expect(screen.getByText(/John Wick/i)).toBeInTheDocument();
   });
 
-  it("reduces the visible movie count when a search query is entered", () => {
-    render(<App />);
+  it("reduces the visible movie count when a search query is entered", async () => {
+    await renderAppWithMovies();
     const totalBefore = screen.getAllByRole("heading", { level: 2 }).length;
 
     fireEvent.change(screen.getByRole("textbox"), {
@@ -263,8 +299,8 @@ describe("App — integration (search and filter)", () => {
     expect(totalAfter).toBeLessThan(totalBefore);
   });
 
-  it("only shows movies matching the search query", () => {
-    render(<App />);
+  it("only shows movies matching the search query", async () => {
+    await renderAppWithMovies();
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "John Wick" },
     });
@@ -273,16 +309,16 @@ describe("App — integration (search and filter)", () => {
     expect(screen.queryByText(/Avatar/i)).not.toBeInTheDocument();
   });
 
-  it("search is case-insensitive", () => {
-    render(<App />);
+  it("search is case-insensitive", async () => {
+    await renderAppWithMovies();
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "AVATAR" },
     });
     expect(screen.getByText(/Avatar: The Way of Water/i)).toBeInTheDocument();
   });
 
-  it("restores all movies when the search query is cleared", () => {
-    render(<App />);
+  it("restores all movies when the search query is cleared", async () => {
+    await renderAppWithMovies();
     const initialCount = screen.getAllByRole("heading", { level: 2 }).length;
 
     fireEvent.change(screen.getByRole("textbox"), {
@@ -294,8 +330,8 @@ describe("App — integration (search and filter)", () => {
     expect(restoredCount).toBe(initialCount);
   });
 
-  it("shows the empty state when no movies match the query", () => {
-    render(<App />);
+  it("shows the empty state when no movies match the query", async () => {
+    await renderAppWithMovies();
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "xyzxyz_no_possible_match" },
     });
