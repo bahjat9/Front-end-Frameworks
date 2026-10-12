@@ -47,6 +47,34 @@ export function getApiHeaders(apiKey: string): HeadersInit {
   };
 }
 
+interface TMDBVideo {
+  key: string;
+  site: string;
+  type: string;
+  official: boolean;
+}
+
+export async function getMovieTrailerUrl(
+  movieId: number,
+  apiKey: string,
+  signal?: AbortSignal,
+): Promise<string | null> {
+  if (!apiKey) return null;
+
+  const response = await fetch(
+    `${TMDB_BASE_URL}/movie/${movieId}/videos?language=en-US`,
+    { headers: getApiHeaders(apiKey), signal },
+  );
+  if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
+  const data: { results?: TMDBVideo[] } = await response.json();
+  const youtubeVideos = (data.results ?? []).filter(
+    (video) => video.site === "YouTube" && video.type === "Trailer" && video.key,
+  );
+  const trailer = youtubeVideos.find((video) => video.official) ?? youtubeVideos[0];
+  return trailer ? `https://www.youtube.com/watch?v=${encodeURIComponent(trailer.key)}` : null;
+}
+
 export function filterAndSortMovies(
   movies: Movie[],
   searchQuery: string,

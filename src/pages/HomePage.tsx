@@ -72,7 +72,12 @@ export default function HomePage({
         />
       )}
       {selectedMovie && (
-        <MovieModal movie={selectedMovie} genres={genres} onClose={() => setSelectedMovieId(null)} />
+        <MovieModal
+          movie={selectedMovie}
+          genres={genres}
+          apiKey={apiKey}
+          onClose={() => setSelectedMovieId(null)}
+        />
       )}
     </main>
   );
