@@ -1,4 +1,4 @@
-export const GENRES = {
+export const GENRES: { [key: number]: string } = {
   28: "Action",
   12: "Adventure",
   16: "Animation",
@@ -17,10 +17,10 @@ export const GENRES = {
   10770: "TV Movie",
   53: "Thriller",
   10752: "War",
-  37: "Western"
+  37: "Western",
 };
 
 export function getGenreNames(genreIds: number[] = []) {
   if (!genreIds || !genreIds.length) return ["General"];
-  return genreIds.map(id => GENRES[id] || "Other");
+  return genreIds.map((id) => GENRES[id] || "Other");
 }

@@ -15,6 +15,11 @@ export interface Movie {
   original_language: string;
 }
 
+export interface Genre {
+  id: number;
+  name: string;
+}
+
 export type SortOption = 'popularity' | 'rating' | 'release_date' | 'title';
 export type ViewMode = 'grid' | 'list';
 export type Theme = 'dark' | 'light';
