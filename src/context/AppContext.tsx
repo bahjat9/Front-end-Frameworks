@@ -8,7 +8,7 @@ interface AppState {
 }
 
 type AppAction =
-  | { type: "TOGGLE_FAVOURITE"; movie: Movie }
+  | { type: "TOGGLE_FAVOURITE"; payload: Movie }
   | { type: "SET_THEME" };
 
 interface AppContextValue extends AppState {
@@ -44,12 +44,12 @@ function readInitialState(): AppState {
 function reducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case "TOGGLE_FAVOURITE": {
-      const isAlreadyFavorite = state.favorites.some((movie) => movie.id === action.movie.id);
+      const isAlreadyFavorite = state.favorites.some((movie) => movie.id === action.payload.id);
       return {
         ...state,
         favorites: isAlreadyFavorite
-          ? state.favorites.filter((movie) => movie.id !== action.movie.id)
-          : [action.movie, ...state.favorites],
+          ? state.favorites.filter((movie) => movie.id !== action.payload.id)
+          : [action.payload, ...state.favorites],
       };
     }
     case "SET_THEME":
@@ -71,7 +71,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute("data-theme", state.theme);
   }, [state.theme]);
 
-  const toggleFavorite = (movie: Movie) => dispatch({ type: "TOGGLE_FAVOURITE", movie });
+  const toggleFavorite = (movie: Movie) => dispatch({ type: "TOGGLE_FAVOURITE", payload: movie });
   const toggleTheme = () => dispatch({ type: "SET_THEME" });
   const isFavorite = (movieId: number) => state.favorites.some((movie) => movie.id === movieId);
 

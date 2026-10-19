@@ -27,22 +27,23 @@ export default function HomePage({
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   const appContext = useOptionalAppContext();
   const favorites = appContext?.favorites ?? [];
-  const moviesUrl = buildMoviesUrl({ genre: selectedGenre, sort });
+  const moviesUrl = buildMoviesUrl({
+    genre: showWatchlist ? "all" : selectedGenre,
+    sort: showWatchlist ? "popularity" : sort,
+  });
   const { movies, loading, error } = useMovies(moviesUrl, apiKey);
   const { genres } = useGenres(GENRES_URL, apiKey);
 
   const sourceMovies = showWatchlist ? favorites : movies;
-  const activeGenre = showWatchlist ? "all" : selectedGenre;
   const filteredMovies = filterAndSortMovies(
     sourceMovies,
     searchQuery,
-    activeGenre,
+    selectedGenre,
     sort,
   );
   const selectedMovie = sourceMovies.find((movie) => movie.id === selectedMovieId) ?? null;
-  const selectedGenreName = showWatchlist
-    ? "Watchlist"
-    : genres.find((genre) => String(genre.id) === selectedGenre)?.name ?? "All Genres";
+  const selectedGenreName =
+    genres.find((genre) => String(genre.id) === selectedGenre)?.name ?? "All Genres";
 
   return (
     <main className="main-container">
@@ -53,15 +54,13 @@ export default function HomePage({
         </div>
       </div>
       <StatsBanner movies={filteredMovies} genreName={selectedGenreName} />
-      {!showWatchlist && (
-        <FilterBar
-          genres={genres}
-          selectedGenre={selectedGenre}
-          sort={sort}
-          onGenreChange={setSelectedGenre}
-          onSortChange={setSort}
-        />
-      )}
+      <FilterBar
+        genres={genres}
+        selectedGenre={selectedGenre}
+        sort={sort}
+        onGenreChange={setSelectedGenre}
+        onSortChange={setSort}
+      />
       {loading && <p role="status">Loading...</p>}
       {error && <p role="alert">Something went wrong. {error}</p>}
       {!loading && !error && (
